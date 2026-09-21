@@ -8,11 +8,16 @@ async function run(){
   if(preview&&eventId){const es=await F.getDoc(F.doc(F.db,"publicEvents",eventId));if(!es.exists()||es.data().published===false){root.innerHTML='<div class="loading">المعاينة غير متاحة.</div>';return}render(es.data(),null);return;}
   if(!token){root.innerHTML='<div class="loading">رابط الدعوة غير صحيح.</div>';return}
   const s=await F.getDoc(F.doc(F.db,"publicInvites",token));if(!s.exists()||s.data().published===false){root.innerHTML='<div class="loading">هذا الرابط غير صالح أو تم إيقاف الدعوة.</div>';return}
-  const g={id:s.id,...s.data()};if(!g.viewed){await F.updateDoc(F.doc(F.db,"publicInvites",token),{viewed:true,firstViewedAt:F.serverTimestamp(),lastViewedAt:F.serverTimestamp()});await F.updateDoc(F.doc(F.db,"events",g.eventId),{viewCount:F.increment(1)}).catch(()=>{});}else await F.updateDoc(F.doc(F.db,"publicInvites",token),{lastViewedAt:F.serverTimestamp()});render(g,g);
+  const g={id:s.id,...s.data()};
+  const analytics={lastViewedAt:F.serverTimestamp(),viewCount:F.increment(1)};
+  if(!g.viewed){analytics.viewed=true;analytics.firstViewedAt=F.serverTimestamp();}
+  await F.updateDoc(F.doc(F.db,"publicInvites",token),analytics).catch(()=>{});
+  await F.updateDoc(F.doc(F.db,"events",g.eventId),{viewCount:F.increment(1)}).catch(()=>{});
+  g.viewed=true;g.viewCount=(g.viewCount||0)+1;render(g,g);
 }
 function render(e,g){
   const family=(window.DAWATY_TEMPLATES||[]).find(x=>x.id===e.templateId)?.family||"gold", d=e.design||{};
-  root.innerHTML=`<div class="invite-shell ${family}-theme" style="--invite-accent:${esc(d.accent||"#d4af37")};--invite-font:${esc(d.font||"Cairo")}"><article class="invite-card ${esc(d.cardStyle||"classic")}">
+  root.innerHTML=`<div class="invite-shell ${family}-theme ${esc(e.templateId||"")}" style="--invite-accent:${esc(d.accent||"#d4af37")};--invite-font:${esc(d.font||"Cairo")}"><article class="invite-card ${esc(d.cardStyle||"classic")}">
     ${e.groomImageUrl||e.brideImageUrl?`<div class="invite-couple-photos">${e.groomImageUrl?`<img src="${esc(e.groomImageUrl)}" alt="العريس">`:""}${e.brideImageUrl?`<img src="${esc(e.brideImageUrl)}" alt="العروسة">`:""}</div>`:""}
     <div class="inv-orn">❦</div><small>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</small><h2>بارك الله لكما<br>وبارك عليكما</h2><p>${esc(e.inviteText||"يتشرفان بدعوتكم لحضور حفل زفافهما")}</p><h1>${esc(e.groomName)} <span class="heart">♡</span> ${esc(e.brideName)}</h1>
     ${g?`<div class="inv-guest">الدعوة مخصصة إلى: <b>${esc(g.name)}</b>${g.table?`<br><span>الطاولة: ${esc(g.table)}</span>`:""}</div>`:"<div class='inv-guest'>معاينة الدعوة</div>"}
