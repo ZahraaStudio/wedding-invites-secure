@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin | دعوتي</title><link rel="stylesheet" href="style.css"></head>
+<body class="app-page">
+  <header class="app-header"><a class="brand" href="index.html"><span>✦</span> دعوتي <small>ADMIN</small></a><button id="adminLogout" class="btn btn-outline btn-sm">خروج</button></header>
+  <main class="dashboard section">
+    <div id="adminGate" class="auth-card compact">
+      <div class="section-title"><span>ADMIN ACCESS</span><h1>دخول الإدارة</h1><p>أدخل بريد حساب الإدارة الموجود في Firebase Authentication.</p></div>
+      <form id="adminLoginForm"><label>البريد<input id="adminEmail" type="email" required></label><label>كلمة المرور<input id="adminPassword" type="password" required></label><button class="btn btn-gold btn-wide">دخول</button><div id="adminMsg" class="msg"></div></form>
+    </div>
+
+    <div id="adminPanel" class="hidden">
+      <div class="page-heading"><div><span class="eyebrow">CONTROL CENTER</span><h1>لوحة الإدارة</h1><p>إدارة العملاء والدعوات والقوالب.</p></div><button id="newClientBtn" class="btn btn-gold">+ إنشاء عميل</button></div>
+      <div class="stats-grid">
+        <div class="stat"><span>العملاء</span><b id="statClients">0</b></div><div class="stat"><span>الدعوات</span><b id="statEvents">0</b></div><div class="stat"><span>المعازيم</span><b id="statGuests">0</b></div><div class="stat"><span>المشاهدات</span><b id="statViews">0</b></div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>العملاء</h2><input id="clientSearch" class="search" placeholder="بحث بالاسم أو البريد"></div><div class="table-wrap"><table><thead><tr><th>العميل</th><th>البريد</th><th>الحد</th><th>الصلاحية</th><th>الحالة</th><th></th></tr></thead><tbody id="clientsTable"></tbody></table></div></div>
+      <div class="panel"><div class="panel-head"><h2>إضافة/تعديل عميل</h2></div>
+        <form id="clientForm" class="form-grid hidden">
+          <input type="hidden" id="clientId"><label>اسم العميل<input id="clientName" required></label><label>البريد الإلكتروني<input id="clientEmail" type="email" required></label><label>كلمة المرور <small>مطلوبة عند الإنشاء فقط</small><input id="clientPassword" type="password" minlength="6"></label><label>حد المعازيم<input id="guestLimit" type="number" min="1" value="500" required></label><label>تاريخ الانتهاء<input id="expiresAt" type="date"></label><label class="check"><input id="clientActive" type="checkbox" checked> الحساب فعال</label><div class="form-actions"><button class="btn btn-gold">حفظ العميل</button><button type="button" id="cancelClient" class="btn btn-outline">إلغاء</button></div><div id="clientMsg" class="msg"></div>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

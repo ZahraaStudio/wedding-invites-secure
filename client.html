@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>حسابي | دعوتي</title><link rel="stylesheet" href="style.css"></head>
+<body class="app-page">
+  <header class="app-header"><a class="brand" href="index.html"><span>✦</span> دعوتي</a><div class="header-user"><span id="clientEmail"></span><button id="clientLogout" class="btn btn-outline btn-sm">خروج</button></div></header>
+  <main class="dashboard section">
+    <div id="clientLoading" class="loading">جاري التحميل...</div>
+    <div id="clientApp" class="hidden">
+      <div class="page-heading"><div><span class="eyebrow">MY INVITATIONS</span><h1>أهلاً بك <span id="clientName"></span></h1><p>أنشئ دعوتك وأدر المعازيم من مكان واحد.</p></div><button id="createEventBtn" class="btn btn-gold">+ إنشاء دعوة</button></div>
+      <div class="stats-grid"><div class="stat"><span>المناسبات</span><b id="cEvents">0</b></div><div class="stat"><span>المعازيم</span><b id="cGuests">0</b></div><div class="stat"><span>تمت المشاهدة</span><b id="cViews">0</b></div><div class="stat"><span>أكدوا الحضور</span><b id="cRsvp">0</b></div><div class="stat"><span>تم تسجيل دخولهم</span><b id="cChecked">0</b></div></div>
+      <div id="eventList" class="event-grid"></div>
+
+      <section id="eventEditor" class="panel hidden">
+        <div class="panel-head"><div><h2>إنشاء / تعديل الدعوة</h2><p>املأ البيانات ثم استورد المعازيم.</p></div><button id="closeEditor" class="btn btn-outline btn-sm">إغلاق</button></div>
+        <form id="eventForm" class="form-grid">
+          <input type="hidden" id="eventId">
+          <label>اسم العريس<input id="groomName" required></label>
+          <label>اسم العروسة<input id="brideName" required></label>
+          <label>تاريخ الزفاف<input id="eventDate" type="date" required></label>
+          <label>وقت المناسبة<input id="eventTime" type="time"></label>
+          <label>اسم القاعة<input id="venue" required></label>
+          <label>عنوان القاعة<input id="venueAddress"></label>
+          <label>رابط Google Maps<input id="mapUrl" type="url"></label>
+          <label>حنة العروسة<input id="brideHenna" type="date"></label>
+          <label>حنة العريس<input id="groomHenna" type="date"></label>
+          <label>التصميم<select id="templateId"></select></label>
+          <label>لون التصميم<input id="accentColor" type="color" value="#d4af37"></label>
+          <label>الخط<select id="fontFamily"><option>Cairo</option><option>Tajawal</option><option>Amiri</option><option>Playfair Display</option></select></label>
+          <label>شكل الكارت<select id="cardStyle"><option value="classic">كلاسيكي</option><option value="glass">زجاجي</option><option value="minimal">Minimal</option><option value="royal">ملكي</option></select></label>
+          <div class="photo-upload-box"><label>صورة العريس<input id="groomPhoto" type="file" accept="image/jpeg,image/png,image/webp"></label><div id="groomPreview" class="photo-preview"><span>لم يتم رفع صورة</span></div><input id="groomImageUrl" type="hidden"></div>
+          <div class="photo-upload-box"><label>صورة العروسة<input id="bridePhoto" type="file" accept="image/jpeg,image/png,image/webp"></label><div id="bridePreview" class="photo-preview"><span>لم يتم رفع صورة</span></div><input id="brideImageUrl" type="hidden"></div>
+          <label class="full">نص الدعوة<textarea id="inviteText" rows="4">يتشرفان بدعوتكم لحضور حفل زفافهما، ووجودكم يزيد فرحتنا.</textarea></label>
+          <div class="full template-preview-mini" id="templatePreview"></div>
+          <div class="form-actions full"><button class="btn btn-gold">حفظ البيانات</button><button type="button" id="previewEvent" class="btn btn-outline">معاينة</button><button type="button" id="checkinBtn" class="btn btn-dark">QR Check-in</button></div><div id="liveInvitePreview" class="live-invite-preview full"></div>
+          <div id="eventMsg" class="msg full"></div>
+        </form>
+
+        <div id="guestTools" class="guest-tools hidden">
+          <div class="panel-head"><div><h3>المعازيم</h3><p>ارفع Excel / CSV / Word، ثم راجع الأسماء قبل الإنشاء.</p></div><div class="import-actions"><input id="guestFile" type="file" accept=".xlsx,.xls,.csv,.docx"><button id="importGuests" class="btn btn-dark">استيراد الملف</button><button id="downloadTemplate" class="btn btn-outline">نموذج Excel</button></div></div>
+          <div id="importMsg" class="msg"></div><div id="tablesWrap" class="tables-wrap"></div>
+          <div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الهاتف</th><th>المشاهدة</th><th>الحضور</th><th>الطاولة</th><th>الدخول</th><th>إجراءات</th><th></th></tr></thead><tbody id="guestTable"></tbody></table></div>
+        </div>
+      </section>
+      <div id="checkinModal" class="modal hidden"><div class="modal-card"><div class="panel-head"><h3>QR Check-in</h3><button class="btn btn-outline btn-sm" onclick="document.getElementById('checkinModal').classList.add('hidden')">إغلاق</button></div><p>أدخل التوكن الموجود داخل رابط QR للضيف. يمكن لاحقًا توصيل قارئ QR بالكاميرا.</p><input id="checkinEventId" type="hidden"><input id="checkinToken" placeholder="الصق رمز الضيف هنا"><button id="checkinSearch" class="btn btn-gold">تسجيل الدخول</button><div id="checkinResult" class="checkin-result"></div></div></div>
+    </div>
+  </main>
+  <script type="module" src="client.js?v=20260921-3"></script>
+</body>
+</html>

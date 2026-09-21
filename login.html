@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#d4af37"><title>تسجيل الدخول | دعوتي</title><link rel="stylesheet" href="style.css"></head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <div class="auth-brand"><span>✦</span> دعوتي</div>
+    <section class="auth-card">
+      <div class="section-title"><span>CLIENT LOGIN</span><h1>مرحبًا بك</h1><p>ادخل بالبريد وكلمة المرور التي أرسلها لك صاحب المنصة.</p></div>
+      <form id="loginForm">
+        <label>البريد الإلكتروني<input id="email" type="email" required autocomplete="username"></label>
+        <label>كلمة المرور<div class="password-field"><input id="password" type="password" required autocomplete="current-password"><button type="button" id="togglePassword" class="password-toggle">إظهار</button></div></label>
+        <button class="btn btn-gold btn-wide" type="submit">تسجيل الدخول</button>
+        <div id="loginMsg" class="msg"></div>
+      </form>
+      <button type="button" id="resetFirebaseSession" class="text-button">واجهت خطأ App Check؟ امسح الجلسة وأعد المحاولة</button>
+      <a class="back-link" href="index.html">← العودة للموقع</a>
+    </section>
+  </main>
+  <script type="module" src="client.js?v=20260921-3"></script>
+</body>
+</html>

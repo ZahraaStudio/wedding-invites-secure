@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true;
+    }
+    function isClient() {
+      return signedIn() && exists(/databases/$(database)/documents/clients/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+    match /clients/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin();
+    }
+    match /templates/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+    match /events/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.clientId == request.auth.uid);
+      allow create: if isClient() && request.resource.data.clientId == request.auth.uid;
+      allow update, delete: if isAdmin() || (signedIn() && resource.data.clientId == request.auth.uid);
+    }
+    match /publicEvents/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin() || (isClient() && request.resource.data.eventId == id);
+      allow delete: if isAdmin();
+    }
+    match /guests/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.clientId == request.auth.uid);
+      allow create: if isClient() && request.resource.data.clientId == request.auth.uid;
+      allow update, delete: if isAdmin() || (signedIn() && resource.data.clientId == request.auth.uid);
+    }
+    match /publicInvites/{token} {
+      allow read: if true;
+      allow create: if isAdmin() || (isClient() && request.resource.data.token == token);
+      allow update: if resource.data.token == token &&
+        request.resource.data.eventId == resource.data.eventId;
+      allow delete: if isAdmin();
+    }
+  }
+}
